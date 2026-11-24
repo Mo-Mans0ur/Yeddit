@@ -27,16 +27,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel,
     onLoginSuccess: () -> Unit,
+    onBackClick: () -> Unit,
+    onForgotPasswordClick: () -> Unit,
+    onCreateAccountClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    //observes the login UI state
     val uiState by viewModel.uiState.collectAsState()
 
+    // Navigates after successful login
     LaunchedEffect(uiState.isLoggedIn) {
         if (uiState.isLoggedIn) {
             onLoginSuccess() // Call the onLoginSuccess callback when the user is logged in
@@ -48,34 +54,40 @@ fun LoginScreen(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(24.dp),
-        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "Yeddit",
-            style = MaterialTheme.typography.headlineLarge
-        )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        // Back button
+        TextButton(
+            onClick = onBackClick,
+            modifier = Modifier.align(Alignment.Start),
+            enabled = !uiState.isLoading && !uiState.isLoggedIn
+        ) {
+            Text("Back")
+        }
+
+        Spacer(modifier = Modifier.height(64.dp))
 
         Text(
-            text = "Welcome back",
-            style = MaterialTheme.typography.titleMedium
+            text = "Welcome back to your school community",
+            style = MaterialTheme.typography.bodyMedium,
+            textAlign = TextAlign.Center
         )
 
         Spacer(modifier = Modifier.height(32.dp))
 
-
+        // Email input field
         OutlinedTextField(
             value = uiState.email,
             onValueChange = viewModel::updateEmail,
-            label = { Text("Email") },
-            singleLine = true,
-            enabled = !uiState.isLoading && !uiState.isLoggedIn, // Disable the email input field when a login request is in progress or the user is already logged in
+            label = {
+                Text("Email")
+            },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Email
             ), // Set the keyboard type to Email for the email input field
-
+            singleLine = true,
+            enabled = !uiState.isLoading && !uiState.isLoggedIn, // Disable the email input field when a login request is in progress or the user is already logged in
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -84,9 +96,9 @@ fun LoginScreen(
         OutlinedTextField(
             value = uiState.password,
             onValueChange = viewModel::updatePassword,
-            label = { Text("Password") },
-            singleLine = true,
-            enabled = !uiState.isLoading && !uiState.isLoggedIn, // Disable the password input field when a login request is in progress or the user is already logged in
+            label = {
+                Text("Password")
+            },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password
             ), // Set the keyboard type to Password for the password input field
@@ -110,36 +122,62 @@ fun LoginScreen(
                     )
                 }
             },
+            singleLine = true,
+            enabled = !uiState.isLoading && !uiState.isLoggedIn, // Disable the password input field when a login request is in progress or the user is already logged in
             modifier = Modifier.fillMaxWidth()
         )
 
-        uiState.errorMessage?.let { error ->
+        // Navigates to the password recovery screen
+        TextButton(
+            onClick = onForgotPasswordClick,
+            modifier = Modifier.align(Alignment.End),
+            enabled = !uiState.isLoading && !uiState.isLoggedIn, // Disable the button when a login request is in progress or the user is already logged in
+        ){
+            Text("Forgot Password?")
+        }
+
+        // Displays validation or login errors
+        uiState.errorMessage?.let { errorMessage ->
+
             Spacer(modifier = Modifier.height(12.dp))
+
             Text(
-                text = error,
+                text = errorMessage,
                 color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.fillMaxWidth()
             )
         }
 
         Spacer(modifier = Modifier.height(24.dp))
 
+        // Login button
         Button(
             onClick = viewModel::login,
             enabled = !uiState.isLoading && !uiState.isLoggedIn, // Disable the login button when a login request is in progress or the user is already logged in
-            modifier = Modifier.fillMaxWidth().height(50.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp)
         ) {
             if (uiState.isLoading) {
                 CircularProgressIndicator(
                     modifier = Modifier.size(24.dp),
-                    color = MaterialTheme.colorScheme.onPrimary,
                     strokeWidth = 2.dp
                 )
             } else {
-                Text("Login")
+                Text("Sign In")
             }
         }
 
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // Navigates to the registration screen
+        TextButton(
+            onClick = onCreateAccountClick,
+            enabled = !uiState.isLoading && !uiState.isLoggedIn, // Disable the button when a login request is in progress or the user is already logged in
+        ) {
+            Text("Create Account")
+        }
     }
 
 }

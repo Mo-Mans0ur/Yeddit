@@ -29,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import com.example.yeddit.auth.AuthNavigation
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,28 +44,16 @@ class MainActivity : ComponentActivity() {
         setContent {
             YedditTheme {
 
-                var isLoggedIn by rememberSaveable {
-                    mutableStateOf(false)
-                }
 
                 Scaffold(
                     modifier = Modifier.fillMaxSize()
 
                 ) { innerPadding ->
+                    // Starts the authentication navigation
 
-                    if (isLoggedIn) {
-                        LoginSuccessScreen(
-                            modifier = Modifier.padding(innerPadding)
-                        )
-                    } else {
-                        LoginScreen(
-                            viewModel = loginViewModel,
-                            onLoginSuccess = {
-                                isLoggedIn = true
-                            },
-                            modifier = Modifier.padding(innerPadding)
-                        )
-                    }
+                    AuthNavigation(
+                        modifier = Modifier.padding(innerPadding)
+                    )
 
                 }
             }
@@ -77,7 +66,9 @@ fun LoginSuccessScreen(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = modifier.fillMaxSize().padding(24.dp),
+        modifier = modifier
+            .fillMaxSize()
+            .padding(24.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ){
@@ -92,5 +83,7 @@ fun LoginSuccessScreen(
             text = "Welcome to Yeddit!",
             style = MaterialTheme.typography.bodyLarge
         )
+
+
     }
 }

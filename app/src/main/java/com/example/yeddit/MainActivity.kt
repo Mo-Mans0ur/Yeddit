@@ -14,22 +14,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModelProvider
-import com.example.yeddit.auth.LoginScreen
-import com.example.yeddit.auth.LoginViewModel
-import com.example.yeddit.ui.theme.YedditTheme
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import com.example.yeddit.auth.AuthNavigation
+import com.example.yeddit.ui.theme.YedditTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,9 +26,6 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
 
-        val loginViewModel = ViewModelProvider(this)[
-            LoginViewModel::class.java
-        ]
 
         setContent {
             YedditTheme {
@@ -71,7 +57,7 @@ fun LoginSuccessScreen(
             .padding(24.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
-    ){
+    ) {
         Text(
             text = "Login Successful!",
             style = MaterialTheme.typography.headlineMedium
